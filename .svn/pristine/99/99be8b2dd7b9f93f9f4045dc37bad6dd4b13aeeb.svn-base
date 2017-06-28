@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+<mapper namespace="solve">
+	
+	<!-- 처음 문제를 푼 회원의 과목과 정답갯수 회원 아이디 등록 -->
+	<insert id="insertSovle" parameterType="solveVO">
+		INSERT INTO SOLVE( MEM_ID,
+		              SOL_RATE,
+		              SUB_NUM)
+		       VALUES ( #{mem_id},
+		                #{sol_rate},
+		                #{sub_num}
+		                )
+	</insert>
+	
+	<!-- 만약 회원이 이 과목에 대한 문제를 풀었으면 등록이 아니라 수정으로 한다. -->
+	<update id="updateSolve" parameterType="solveVO">
+		UPDATE SOLVE
+		   SET SOL_RATE = #{sol_rate}
+		 WHERE MEM_ID = #{mem_id}
+		 AND   SUB_NUM = #{sub_num}
+	</update>
+	
+	<!-- 풀이 리스트에 이미 세션회원이 푼 기록이 있는지 검사할때 쓰인다.-->
+	<select id="solveList" resultType="solveVO" parameterType="map">
+		SELECT * FROM SOLVE WHERE MEM_ID = #{mem_id} AND SUB_NUM = #{sub_num}
+	</select>
+	
+	<!-- 풀이 리스트에서 OO회원이 푼 모든 과목의 기록을 가져올때 쓰인다. -->
+	<select id="solveMemList" resultType="solveVO" parameterType="map">
+		SELECT * FROM SOLVE WHERE MEM_ID = #{mem_id}
+	</select>
+</mapper>

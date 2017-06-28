@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+<mapper namespace="count">
+	
+	<!-- 등록된 프로젝트 수 -->
+	<select id="projectCount" resultType="int">
+		SELECT COUNT(*)
+		  FROM PROJECT
+	</select>
+	
+	<!-- 등록된 프리랜서 수 -->
+	<select id="freelancerCount" resultType="int">
+		SELECT COUNT(*)
+		  FROM MEMBER
+	</select>
+	
+	<!-- 등록된 포트폴리오 수 -->
+	<select id="portfolioCount" resultType="int">
+		SELECT COUNT(*)
+		  FROM PORTFOLIO
+	</select>
+	
+</mapper>

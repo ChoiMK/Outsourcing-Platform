@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+<mapper namespace="commt">
+       
+      <!-- 댓글 등록 -->
+      <insert id="insertCommt" parameterType="commtVO">
+      	INSERT INTO COMMT (
+      					  COM_NUM,
+      					  COM_CON,
+      					  COM_INST_DATE,
+      					  COM_GR_NUM,
+      					  MEM_NM,
+      					  COM_LOC,
+      					  MEM_ID
+      					  <if test="mem_profile != '' and mem_profile != null">
+      					  ,MEM_PROFILE
+      					  </if>
+      					)
+      	VALUES (
+      			 SEQ_COMMT.NEXTVAL,
+      			 #{com_con},
+      			 SYSDATE,
+      			 SEQ_COMMT.CURRVAL,
+      			 #{mem_nm},
+      			 #{com_loc},
+      			 #{mem_id}
+      			 <if test="mem_profile != '' and mem_profile != null">
+      			 ,#{mem_profile}
+      			 </if>
+      	       )
+      </insert>
+      
+      <!-- 댓글 수정 -->
+      <update id="updateCommt" parameterType="commtVO">
+      	UPDATE COMMT
+      	   SET COM_CON = #{com_con}
+      	 WHERE COM_NUM = #{com_num}
+      </update>   
+      
+      <!-- 댓글의 댓글 등록 -->
+      <insert id="insertCommtReply" parameterType="commtVO">
+       INSERT INTO COMMT (
+      					  COM_NUM,
+      					  COM_CON,
+      					  COM_INST_DATE,
+      					  COM_GR_NUM,
+      					  COM_TURN,
+      					  COM_DEP,
+      					  MEM_NM,
+      					  COM_LOC,
+      					  MEM_ID
+      					 <if test="mem_profile != '' and mem_profile != null">
+      					  ,MEM_PROFILE
+      					  </if>
+      					)
+      	VALUES (
+      			 SEQ_COMMT.NEXTVAL,
+      			 #{com_con},
+      			 SYSDATE,
+      			 #{com_gr_num},
+      			 #{com_turn},
+      			 #{com_dep},
+      			 #{mem_nm},
+      			 #{com_loc},
+      			 #{mem_id}
+      			 <if test="mem_profile != '' and mem_profile != null">
+      			 ,#{mem_profile}
+      			 </if>
+      	       )
+      </insert>
+      
+      <select id="commtInfo" resultType="commtVO" parameterType="map">
+      	SELECT * 
+      	FROM COMMT
+      	WHERE COM_NUM = #{com_num}
+      </select>
+      
+      <select id="commtMaxturn" resultType="String" parameterType="map">
+      	SELECT MAX(COM_TURN) 
+		FROM COMMT
+		WHERE COM_GR_NUM = #{com_num}
+      </select>
+      
+      <!-- 댓글 리스트 -->
+      <select id="commtList" resultType="commtVO" parameterType="map">
+      	SELECT *
+      	  FROM COMMT
+      	 WHERE COM_LOC = #{pro_num}
+      	 ORDER BY COM_GR_NUM ASC, COM_TURN ASC
+      </select>
+      
+      <!-- 댓글 리스트(자료실) -->
+      <select id="commtListreference" resultType="commtVO" parameterType="map">
+      	SELECT *
+      	  FROM COMMT
+      	 WHERE COM_LOC = #{re_num}
+      	 ORDER BY COM_GR_NUM ASC, COM_TURN ASC
+      </select>
+      
+</mapper>

@@ -1,0 +1,29 @@
+package kr.or.plzdvl.dvrTest.vo;
+
+public class QuizVO {
+
+	private String quiz_num;
+	private String quiz_con;
+	private String sub_num;
+	
+	public String getQuiz_num() {
+		return quiz_num;
+	}
+	public void setQuiz_num(String quiz_num) {
+		this.quiz_num = quiz_num;
+	}
+	public String getQuiz_con() {
+		return quiz_con;
+	}
+	public void setQuiz_con(String quiz_con) {
+		this.quiz_con = quiz_con;
+	}
+	public String getSub_num() {
+		return sub_num;
+	}
+	public void setSub_num(String sub_num) {
+		this.sub_num = sub_num;
+	}
+	
+	
+}

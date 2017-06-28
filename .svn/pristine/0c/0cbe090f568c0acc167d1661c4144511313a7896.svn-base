@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="metting">
+
+      <insert id="insertMetting" parameterType="map">
+      	{call insert_meeting(#{fixfree_id},#{fixcnt_id},#{fixmem_id},#{fix_date})}
+      </insert>
+      
+      <select id="meetingList" parameterType="map" resultType="meetVO">
+	      	SELECT MT.*, MB.MEM_NM AS ASKMEM
+	  		FROM METING MT 
+	 		INNER JOIN MEMBER MB
+	    	ON (MT.ME_FREE_NM = MB.MEM_ID OR MT.ME_CNT_NM = MB.MEM_ID)
+	    			WHERE MT.ME_MEM_ID = #{mem_id}
+	    			<![CDATA[
+	    			AND MB.MEM_NM <> (SELECT MEM_NM
+	                      			  FROM MEMBER FM
+	                      			  WHERE FM.MEM_ID = #{mem_id})
+	    			]]>
+      </select>
+      
+</mapper>

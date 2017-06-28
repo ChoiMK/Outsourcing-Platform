@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+<mapper namespace="member">
+		
+       <sql id="selectAll">
+          SELECT *
+            FROM MEMBER
+           WHERE (MEM_TYPE = 'C'
+              OR MEM_TYPE = 'F'
+              OR MEM_TYPE = 'A'
+              )
+       </sql>
+       
+       <!-- 
+          Map<String,String> params = new HashMap<String,String>();
+          params.put("mem_id", mem_id);
+          params.put("mem_pass", mem_pass);
+        -->
+        
+       <!-- 비밀번호가 공백이 아니거나 NUll이 아니면 select  -->
+       <select id="memberInfo" resultType="memberVO" parameterType="Map">
+           <include refid="selectAll"/>
+              AND  MEM_ID = #{mem_id}
+              <if test="mem_pw != ''">
+                 <if test="mem_pw != null">
+                 AND MEM_PW = #{mem_pw}
+                 </if>
+              </if>
+       </select>
+       
+       
+       <!-- MEMBER 정보 변경 -->
+       <update id="updateMember" parameterType="memberVO">
+         UPDATE MEMBER
+            SET MEM_PW = #{mem_pw},
+                MEM_NM = #{mem_nm},
+                MEM_MAIL = #{mem_mail},
+                MEM_TEL = #{mem_tel},
+                MEM_TYPE = #{mem_type},
+                MEM_COMS = #{mem_coms}
+                <if test="mem_self != '' and mem_self != null">
+                ,MEM_SELF = #{mem_self}
+                </if>
+                <if test="mem_grd != '' and mem_grd != null">
+                ,MEM_GRD = #{mem_grd}
+                </if>
+                <if test="mem_pro_count != '' and mem_pro_count != null">
+                ,MEM_PRO_COUNT = #{mem_pro_count}
+                </if> 
+                <if test="mem_star_sum != '' and mem_star_sum != null">
+                ,MEM_STAR_SUM = #{mem_star_sum}
+                </if>      
+          WHERE MEM_ID = #{mem_id}
+      </update>
+      
+      <!-- MEMBER 삭제 -->
+	  <update id="deleteMember" parameterType="map">
+      	UPDATE MEMBER
+           SET MEM_TYPE = 'D'
+      	 WHERE MEM_ID = #{mem_id}            
+      </update>
+      
+      <!-- Member 등록 -->
+      <insert id="insertMember" parameterType="memberVO">
+      	INSERT 
+       	 INTO MEMBER(
+                     MEM_ID, 
+                     MEM_NM
+       	  			<if test="mem_pw != '' and mem_pw != null">
+                     ,MEM_PW
+                     </if>
+                     <if test="mem_mail != '' and mem_mail != null">
+                     ,MEM_MAIL
+                     </if>
+                     <if test="mem_tel != '' and mem_tel != null">
+                     ,MEM_TEL
+                     </if>
+                     <if test="mem_type != '' and mem_type != null">
+                     ,MEM_TYPE
+                     </if>
+                     <if test="mem_coms != '' and mem_coms != null">
+                     MEM_COMS
+                     </if>
+              )      
+      	VALUES( 
+                     #{mem_id},
+                     #{mem_nm}
+                     <if test="mem_pw != '' and mem_pw != null">
+                     ,#{mem_pw}
+                     </if>
+                     <if test="mem_mail != '' and mem_mail != null">
+                     ,#{mem_mail}
+                     </if>
+                     <if test="mem_tel != '' and mem_tel != null">
+                     ,#{mem_tel}
+                     </if>
+                     <if test="mem_type != '' and mem_type != null">
+                     ,#{mem_type}
+                     </if>
+                     <if test="mem_coms != '' and mem_coms != null">
+                     ,#{mem_coms}
+                     </if>
+              )
+      </insert>
+      
+      <!-- 프리랜서 리스트 -->
+      <select id="freelancerList" resultType="memberVO" parameterType="map">
+      	SELECT *
+      	  FROM MEMBER
+      	 WHERE MEM_TYPE = 'F'
+      </select>
+      
+      <!-- 사진 등록 -->
+      <insert id="insertFileItem" parameterType="fileitemVO">
+      	INSERT INTO FILEITEM (
+      	                       FILE_NUM,
+      	                       FILE_SIZE,
+      	                       FILE_UPL_DATE,
+      	                       FILE_CON_TYPE,
+      	                       FILE_UPL_NM,
+      	                       FILE_SAVE_NM,
+      	                       FILE_BOD_NUM
+      	                     )
+      	             VALUES (
+      	             		   SEQ_FILEITEM.NEXTVAL,
+      	             		   #{file_size},
+      	             		   SYSDATE,
+      	             		   #{file_con_type},
+      	             		   #{file_upl_nm},
+      	             		   #{file_save_nm},
+      	             		   #{file_bod_num}
+      	                    )
+      </insert>
+      
+      <!-- 사진 보기 -->
+      <select id="fileitemInfo" parameterType="map" resultType="fileitemVO">
+       SELECT *
+      	 FROM FILEITEM
+      	WHERE FILE_BOD_NUM = #{mem_id}
+      </select>
+      
+      
+      <!-- 자기소개 수정 -->
+      <update id="updateMemberSelf" parameterType="memberVO">
+         UPDATE MEMBER
+            SET MEM_SELF = #{mem_self}
+          WHERE MEM_ID = #{mem_id}
+      </update>
+      
+      
+      <select id="memberSel" resultType="memberVO" parameterType="Map">
+           <include refid="selectAll"/>
+              AND MEM_MAIL = #{mem_mail}
+              <if test="mem_id != '' and mem_id != null">
+                 AND MEM_ID = #{mem_id}
+              </if>
+              <if test="mem_nm != '' and mem_nm != null">
+                 AND MEM_NM = #{mem_nm}
+              </if>
+       </select>
+       
+      <!-- 맴버 사진 & 정보 보기 리스트 -->
+      <select id="memberPicList" parameterType="map" resultType="memberfileVO">
+ 			SELECT B.*
+			  FROM ( SELECT ROWNUM RNM, A.*, F.*
+    				   		FROM FILEITEM F FULL OUTER JOIN MEMBER A 
+                								  ON F.FILE_BOD_NUM = A.MEM_ID
+      	     		  WHERE MEM_TYPE = 'F') B
+			 <choose>
+			 	<when test="endNum == '' or startNum == ''">
+			 	</when>
+			 	<otherwise>
+				 		<![CDATA[
+				 			WHERE RNM >= #{startNum}
+				 			AND RNM <= #{endNum}
+				 		]]>
+			 	</otherwise>
+			 </choose>
+      </select>
+      
+      <!-- 사진 수정 -->
+      <update id="memberPicUpdate" parameterType="fileitemVO">
+      	UPDATE FILEITEM
+      	   SET FILE_SIZE = #{file_size},
+      	       FILE_UPL_DATE = SYSDATE,
+			   FILE_CON_TYPE = #{file_con_type},
+			   FILE_UPL_NM = #{file_upl_nm},
+			   FILE_SAVE_NM = #{file_save_nm}
+	     WHERE FILE_BOD_NUM = #{file_bod_num}
+      </update>
+      
+      
+      <!-- 파일 리스트 -->
+      <select id="fileitemList" resultType="String" parameterType="map">
+      	SELECT *
+      	  FROM FILEITEM
+      	 WHERE FILE_BOD_NUM = #{file_bod_num}
+      </select>
+      
+      <!-- 한명의 회원에 대한 사진 & 기본정보 -->
+      <select id="memberInfoAndPicInfo"  resultType="memberfileVO" parameterType="map">
+      	SELECT *
+      	      FROM FILEITEM
+      	 FULL OUTER JOIN MEMBER
+      	         ON FILEITEM.FILE_BOD_NUM = MEMBER.MEM_ID
+      	      WHERE MEM_TYPE = 'F'
+      	      AND MEM_ID = #{mem_id}
+      </select>
+      
+      <!-- 타이틀 등록 -->
+      <update id="insertMemTitle" parameterType="memberVO">
+      	 UPDATE MEMBER
+            SET MEM_TIG_NM = #{mem_tig_nm}
+          WHERE MEM_ID = #{mem_id}
+      </update>
+      
+      <!-- 관리자단 회원관리 리스트 -->
+       <select id = "memberList" resultType="memberVO" parameterType="map">
+       		SELECT * 
+       		  FROM MEMBER
+       		 WHERE MEM_TYPE != 'A'
+       		   AND MEM_TYPE != 'D'
+       		<if test="mem_type != '' and mem_type != null">
+       		   AND MEM_TYPE = #{mem_type}
+       		</if>
+       </select>
+</mapper>

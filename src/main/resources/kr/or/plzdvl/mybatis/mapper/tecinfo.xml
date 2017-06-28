@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+<mapper namespace="tecinfo">
+       
+      <!-- 기술정보 등록 -->
+      <insert id="insertTecinfo" parameterType="tecinfoVO">
+      	INSERT INTO TEC_INFO (
+      					  TEC_NUM,
+      					  TEC_INFO_LAN,    					
+      					  MEM_ID
+      					)
+      	VALUES (
+      			 SEQ_TEC_INFO.NEXTVAL,
+      			 #{tec_info_lan},     			
+      			 #{mem_id}
+      	       )
+      </insert>
+      
+       <!-- 기술정보 리스트 -->
+       <select id = "tecinfoList" resultType="tecinfoVO" parameterType="map">
+       	SELECT *
+          FROM TEC_INFO
+         WHERE MEM_ID = #{mem_id}
+       </select>
+       
+       <!-- 기술정보 삭제 -->
+       <delete id="deleteTecinfo" parameterType="tecinfoVO">
+       	DELETE FROM TEC_INFO
+       	      WHERE TEC_INFO_LAN = #{tec_info_lan}
+       	      AND   MEM_ID = #{mem_id}
+       </delete>
+</mapper>

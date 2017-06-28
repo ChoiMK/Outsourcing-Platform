@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+<mapper namespace="portfolio">
+      <sql id="selectAll">
+      	SELECT *
+      	  FROM PORTFOLIO
+      </sql>
+      
+      <resultMap type="portfolioVO" id="portfolioMap">
+	  	<result property="po_tit" column="po_tit"/>
+	  	<result property="po_prog_term" column="po_prog_term"/>
+	  	<result property="po_part" column="po_part"/>
+	  	<result property="po_con" column="po_con"/>
+	  	<result property="mem_id" column="mem_id"/>
+	  </resultMap>
+
+	  <!-- 포트폴리오 등록 -->
+	  <insert id="insertPortfolio" parameterType="portfolioVO">
+	  	<selectKey keyProperty="po_num" resultType="string" order="BEFORE">
+			SELECT 'P'||LPAD(SEQ_PORTFOLIO.NEXTVAL,5,0) FROM DUAL
+		</selectKey>
+      	INSERT INTO PORTFOLIO (
+      					  PO_NUM,
+      					  PO_TIT,
+      					  PO_CON,
+      					  MEM_ID
+      					)
+      	VALUES (
+      			 #{po_num},
+      			 #{po_tit},
+      			 #{po_con},
+      			 #{mem_id}
+      	       )
+      </insert>
+      
+      <!-- 사진 등록 -->
+      <insert id="insertFileItem" parameterType="fileitemVO">
+      	INSERT INTO FILEITEM (
+      	                       FILE_NUM,
+      	                       FILE_SIZE,
+      	                       FILE_UPL_DATE,
+      	                       FILE_CON_TYPE,
+      	                       FILE_UPL_NM,
+      	                       FILE_SAVE_NM,
+      	                       FILE_BOD_NUM
+      	                     )
+      	             VALUES (
+      	             		   SEQ_FILEITEM.NEXTVAL,
+      	             		   #{file_size},
+      	             		   SYSDATE,
+      	             		   #{file_con_type},
+      	             		   #{file_upl_nm},
+      	             		   #{file_save_nm},
+      	             		   #{file_bod_num}
+      	                    )
+      </insert>
+      
+      <!-- 파일 리스트 -->
+      <select id="fileitemList" parameterType="map" resultType="portfoliofileVO">
+      	SELECT *
+      	FROM   FILEITEM
+      	INNER JOIN PORTFOLIO
+      		ON FILEITEM.FILE_BOD_NUM = PORTFOLIO.PO_NUM
+      		WHERE PORTFOLIO.MEM_ID = #{mem_id}
+      </select>
+      
+      <!-- 포트폴리오 삭제 -->
+      <select id="deletePortfolio" statementType="CALLABLE" parameterType="map">
+      	{call delete_file_po(#{file_bod_num})}
+      </select>
+      
+      <!-- 포트폴리오 리스트 ( 메인에서 )  -->
+      <select id="portfolioListMain" resultType="portfoliofileVO">
+      	SELECT *
+      	  FROM FILEITEM
+      	 INNER JOIN PORTFOLIO
+      	    ON FILEITEM.FILE_BOD_NUM = PORTFOLIO.PO_NUM
+      ORDER BY FILE_UPL_DATE DESC
+      </select>
+      
+</mapper>

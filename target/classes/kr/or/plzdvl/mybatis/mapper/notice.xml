@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+<mapper namespace="notice">
+       
+      <sql id="selectAll">
+       SELECT *
+         FROM NBOD
+        WHERE NBOD_WHT = 'n'
+      </sql> 
+      
+      <resultMap type="noticeVO" id="noticeMap">
+      	<result property="nbod_tit" column="nbod_tit"/>
+      	<result property="nbod_con" column="nbod_con"/>
+      	<result property="nbod_inst_date" column="nbod_inst_date"/>
+      	<result property="mem_id" column="mem_id"/>
+      </resultMap>
+       
+      <!-- notice 수정 -->
+      <update id="updateNotice" parameterType="noticeVO">
+      	UPDATE NBOD
+      	   SET NBOD_TIT = #{nbod_tit},
+      	       NBOD_CON = #{nbod_con}
+      	 WHERE NBOD_NUM = #{nbod_num}
+      </update>
+      
+      <!-- Notice 삭제 -->
+	  <update id="deleteNotice" parameterType="map">
+          UPDATE NBOD
+             SET NBOD_WHT = 'y'
+           WHERE NBOD_NUM = #{nbod_num}
+      </update>
+      
+      <!-- Notice 등록 -->
+      <insert id="insertNotice" parameterType="noticeVO">
+      	INSERT INTO NBOD (
+      					  NBOD_NUM,
+      					  NBOD_TIT,
+      					  NBOD_CON,
+      					  NBOD_INST_DATE,
+      					  MEM_ID
+      					)
+      	VALUES (
+      			 SEQ_NBOD.NEXTVAL,
+      			 #{nbod_tit},
+      			 #{nbod_con},
+      			 SYSDATE,
+      			 #{mem_id}
+      	       )
+      </insert>
+      
+       <!-- Notice 리스트 -->
+       <select id="noticeList" resultType="noticeVO" parameterType="map">
+       	<include refid="selectAll"></include>
+       </select>
+       
+       <!-- Notice 상세보기 -->
+       <select id="noticeInfo" resultMap="noticeMap" parameterType="map">
+       	<include refid="selectAll" />
+       		AND NBOD_NUM = #{nbod_num}
+       </select>
+       
+</mapper>

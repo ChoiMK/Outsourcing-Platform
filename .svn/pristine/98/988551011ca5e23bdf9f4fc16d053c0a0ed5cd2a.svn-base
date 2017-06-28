@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+<mapper namespace="project">
+		
+       <sql id="selectAll">
+         SELECT * 
+           FROM PROJECT
+           <![CDATA[
+          WHERE PRO_COD_WHT <> 'D'
+          ]]>
+       </sql>
+       
+       <resultMap type="projectVO" id="projectMap">
+       	<result property="pro_tit" column="pro_tit"/>
+       	<result property="pro_con" column="pro_con"/>
+       	<result property="pro_dtn" column="pro_dtn"/>
+       	<result property="pro_term" column="pro_term"/>
+       	<result property="pro_bud" column="pro_bud"/>
+       	<result property="pro_dea_date" column="pro_dea_date"/>
+       	<result property="pro_plan_cod" column="pro_plan_cod"/>
+       	<result property="pro_need_tec" column="pro_need_tec"/>
+       	<result property="pro_cod_wht" column="pro_cod_wht"/>
+       </resultMap>
+       
+     
+       <!-- 프로젝트 리스트  -->
+       <select id = "projectList" resultType="projectVO" parameterType="map">
+       		<include refid="selectAll"/>
+       		AND PRO_COD_WHT = '모집중'
+       		<if test="pro_dtn != '' and pro_dtn != null">
+       			AND PRO_DTN = #{pro_dtn}
+       		</if>
+       </select>
+       
+       <!-- 프로젝트 등록(견적 요청시) -->
+       <insert id="insertProject_Y" parameterType="projectVO" useGeneratedKeys="true" keyProperty="pro_num">
+         <selectKey keyProperty="pro_num" resultType="String" order="BEFORE">
+  			  SELECT 'J'||LPAD(SEQ_PROJECT.NEXTVAL,5,0) FROM DUAL
+  		 </selectKey>
+       INSERT 
+       	 INTO PROJECT(
+                     PRO_NUM,
+                     PRO_TIT,
+                     PRO_CON,
+                     PRO_DTN,
+                     PRO_TERM,
+                     PRO_BUD,
+                     PRO_DEA_DATE,
+                     PRO_PLAN_COD,
+                     PRO_NEED_TEC,
+                     PRO_EST_INQ_WHT,
+                     MEM_ID,
+                     PRO_EST_REQ_MEM_ID
+              )      
+      	VALUES( 
+                    #{pro_num},
+                    #{pro_tit},
+                    #{pro_con},
+                    #{pro_dtn},
+                    #{pro_term},
+                    #{pro_bud},
+                    #{pro_dea_date},
+                    #{pro_plan_cod},
+                    #{pro_need_tec},
+                    'Y',
+                    #{mem_id},
+                    #{pro_est_req_mem_id}
+              )
+       </insert>
+              
+       <!-- 프로젝트 등록(일반 등록시) -->
+       <insert id="insertProject_N" parameterType="projectVO">
+              INSERT 
+       	 INTO PROJECT(
+                     PRO_NUM,
+                     PRO_TIT,
+                     PRO_CON,
+                     PRO_DTN,
+                     PRO_TERM,
+                     PRO_BUD,
+                     PRO_DEA_DATE,
+                     PRO_PLAN_COD,
+                     PRO_NEED_TEC,
+                     PRO_EST_INQ_WHT,
+                     MEM_ID                
+              )      
+      	VALUES( 
+                   'J'||LPAD(SEQ_PROJECT.NEXTVAL,5,0),
+                    #{pro_tit},
+                    #{pro_con},
+                    #{pro_dtn},
+                    #{pro_term},
+                    #{pro_bud},
+                    #{pro_dea_date},
+                    #{pro_plan_cod},
+                    #{pro_need_tec},
+                    'N',
+                    #{mem_id}                  
+              )
+       </insert>
+       
+       <!-- 프로젝트 삭제 -->
+       <update id="deleteProject" parameterType="map">
+      	UPDATE PROJECT
+           SET PRO_COD_WHT = 'D'
+      	 WHERE PRO_NUM = #{pro_num}            
+       </update>
+       
+       <!-- 프로젝트 착수될 때 착수일 변경 -->
+       <update id="supportProjectDate" parameterType="map">
+       	UPDATE PROJECT
+       	   SET PRO_ST_DATE = SYSDATE,
+       	       PRO_COD_WHT = '진행',
+       	       PRO_SUP_MEM_ID = #{pro_sup_mem_id}
+       	 WHERE PRO_NUM = #{pro_num}
+       </update>
+       
+       <!-- 프로젝트 상세보기 -->
+       <select id="projectInfo" resultMap="projectMap" parameterType="map">
+        <include refid="selectAll" />
+          AND PRO_NUM = #{pro_num}
+       </select>
+       
+       
+       
+    	<!-- 클라이언트가 (자기가)등록한 프로젝트 리스트 보기 -->
+       <select id="clientProjectList" resultType="projectVO" parameterType="map">
+       		SELECT * 
+       		  FROM PROJECT
+       		 <![CDATA[
+       		 WHERE PRO_COD_WHT<> 'D'
+       		 ]]>
+       		 <if test="mem_id != '' and mem_id != null">
+       		 AND MEM_ID = #{mem_id}
+       		 </if>
+       		 <if test="est_req != '' and est_req != null">
+       		 AND PRO_EST_INQ_WHT = #{est_req}
+       		 </if>
+       		 <if test="est_mem_id != '' and est_mem_id != null">
+       		 AND PRO_EST_REQ_MEM_ID = #{est_mem_id}
+       		 </if>
+       		 <if test="pro_cod_wht != '' and pro_cod_wht != null">
+       		 AND PRO_COD_WHT = #{pro_cod_wht}
+       		 </if>
+       </select>
+       
+       <!-- D-day 날짜 계산 -->
+       <select id="d_daySelect" resultType="int" parameterType="map">
+       		SELECT FLOOR(PRO_DEA_DATE - SYSDATE) 
+			  FROM PROJECT
+			 WHERE PRO_NUM = #{pro_num} 
+       </select>
+       
+      <!-- 로그인할시 D_day 변경후 프로젝트 상태 모집중 -> 모집완료 변경 -->
+      <select id="d_dayupdate" resultType="int" statementType="CALLABLE">
+      	{call d_dayProcedure}
+      </select>
+      
+      <update id="updateProject" parameterType="projectVO">
+      		UPDATE PROJECT
+      		SET   PRO_TIT = #{pro_tit},
+                  PRO_CON = #{pro_con}, 
+                  PRO_DTN = #{pro_dtn},
+                  PRO_TERM = #{pro_term},
+                  PRO_BUD = #{pro_bud},
+                  PRO_PLAN_COD = #{pro_plan_cod},
+                  PRO_NEED_TEC = #{pro_need_tec},
+                  PRO_EST_INQ_WHT = #{pro_est_inq_wht},
+                  MEM_ID = #{mem_id},
+                  PRO_COD_WHT = #{pro_cod_wht}
+                  <if test="pro_sup_mem_id != '' and pro_sup_mem_id != null">
+                  ,PRO_SUP_MEM_ID = #{pro_sup_mem_id}
+                  </if>
+                  <if test="pro_gress_con != '' and pro_gress_con != null">
+                  ,PRO_GRESS_CON = #{pro_gress_con}
+                  </if>
+                  <if test="pro_st_date != '' and pro_st_date != null">
+                  ,PRO_ST_DATE = SYSDATE
+                  </if>
+      		WHERE PRO_NUM = #{pro_num}
+      </update>
+      
+      <!-- 메인화면에서 보여지는 프로젝트 리스트 -->
+      <select id="projectListMain" resultType="projectVO">
+      	<include refid="selectAll" />
+      </select>
+       
+</mapper>

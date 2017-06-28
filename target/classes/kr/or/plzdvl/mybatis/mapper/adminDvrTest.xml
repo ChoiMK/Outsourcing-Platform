@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="adminDvrTest">
+
+<!-- 	문제 등록
+	<insert id="insertDvrTestQue" parameterType="adminDvrTestQueVo">
+		INSERT INTO TEST_QUE (  TEST_NUM,
+								TEST_SUB,
+								TEST_CON
+							 )
+		VALUES (  SEQ_TEST_QUE.NEXTVAL,
+		          #{test_sub},
+		          #{test_con}
+		 	   )
+	</insert>
+	
+	문제 수정
+	<update id="updateDvrTestQue" parameterType="adminDvrTestQueVo" >
+		UPDATE TEST_QUE
+		   SET TEST_CON = #{test_con}
+		 WHERE TEST_NUM = #{test_num}
+ 	</update>
+	
+	문제 삭제
+	<delete id="deleteDvrTestQue" parameterType="java.util.HashMap" >
+		DELETE FROM TEST_QUE
+		      WHERE TEST_NUM = #{test_num}
+	</delete>
+	
+	보기 등록
+	<insert id="insertDvrTestOPT" parameterType="dvrTestOptVo">
+		INSERT INTO TEST_OPT (  OPT_NUM,
+								OPT_TEST_NUM,
+								OPT_TEST_SUB,
+								OPT_CON,
+								OPT_CON_WHT
+							 )
+		VALUES (  SEQ_TEST_OPT.NEXTVAL,
+		          #{opt_test_num},
+		          #{opt_test_sub},
+		          #{opt_con},
+		          #{opt_con_wht}
+		 	   )
+	</insert>
+	
+	보기 수정
+	<update id="updateDvrTestOPT" parameterType="dvrTestOptVo" >
+		UPDATE TEST_OPT
+		   SET OPT_CON = #{opt_con},
+		       OPT_CON_WHT = #{opt_con_wht}
+		 WHERE OPT_NUM = #{opt_num}
+ 	</update>
+	
+	보기 삭제
+	<delete id="deleteDvrTestOPT" parameterType="map" >
+		DELETE FROM TEST_OPT
+		      WHERE OPT_NUM = #{opt_num}
+	</delete>
+	
+	문제리스트
+	<select id="getAdminDvrTestQueList" resultType="adminDvrTestQueVo" parameterType="java.util.HashMap">
+       	SELECT ROWNUM, B.* 
+		  FROM ( SELECT * FROM TEST_QUE
+  					     WHERE TEST_SUB = 'os') B
+    </select>
+    
+    	문제 상세보기 리스트
+	<select id="getAdminDvrTestQueInfo" resultType="adminDvrTestQueVo" parameterType="map">
+       	SELECT ROWNUM, B.* 
+		  FROM ( SELECT * FROM TEST_QUE
+  					     WHERE TEST_SUB = #{test_sub} 
+  					     AND TEST_NUM = #{test_num}) B
+    </select>
+	
+	보기리스트
+	<select id="getAdminDvrTestOPTList" resultType="dvrTestOptVo" parameterType="map">
+       	SELECT * 
+       	  FROM TEST_OPT
+  		 WHERE OPT_TEST_NUM = #{opt_test_num}
+ 		   AND OPT_TEST_SUB = #{opt_test_sub}
+    </select>	 -->
+	
+
+</mapper>  

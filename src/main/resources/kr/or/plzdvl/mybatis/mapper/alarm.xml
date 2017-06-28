@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+<mapper namespace="alarm">
+
+	<!-- 알림등록(댓글) -->
+	<insert id="insertAlarmCommt" parameterType="alarmVO">
+		INSERT INTO ALARM ( AL_NUM, AL_TIT, AL_TIME, COM_NUM, PRO_NUM, MEM_ID, AL_URL ) 
+		VALUES ( SEQ_ALARM.NEXTVAL, #{al_tit}, SYSDATE, #{com_num}, #{pro_num}, #{mem_id}, #{al_url})
+	</insert>
+
+	<!-- 알림등록( 댓글을 제외한 알림 ) -->
+	<insert id="insertAlarm" parameterType="alarmVO">
+		INSERT INTO ALARM ( AL_NUM, AL_TIT, AL_TIME, PRO_NUM, MEM_ID, AL_URL ) 
+		VALUES ( SEQ_ALARM.NEXTVAL, #{al_tit}, SYSDATE, #{pro_num}, #{mem_id}, #{al_url})
+	</insert>
+	
+	<!-- 알림확인 -->
+	<update id="alarmCheck" parameterType="map">
+		UPDATE ALARM
+		   SET AL_CHK_WHT = 'Y'
+		 WHERE AL_NUM = #{al_num}
+	</update>
+	
+	<select id="mem_alarmList" parameterType="map" resultType="alarmVO">
+		SELECT * 
+		FROM ALARM
+		WHERE MEM_ID = #{mem_id}
+		<if test="al_chk_wht != '' and al_chk_wht != null">
+		AND AL_CHK_WHT = #{al_chk_wht}
+		</if>
+		ORDER BY AL_TIME DESC
+	</select>
+	
+	
+	
+</mapper>

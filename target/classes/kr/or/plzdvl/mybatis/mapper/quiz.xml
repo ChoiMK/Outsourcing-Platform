@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+<mapper namespace="quiz">
+
+
+	 <resultMap type="adminquizVO" id="QuizMap">
+       	<result property="quiz_num" column="quiz_num"/>
+       	<result property="quiz_con" column="quiz_con"/>
+       	<result property="sub_num" column="sub_num"/>
+    </resultMap>
+
+	<!-- 문제등록 -->
+	<insert id="insertQuiz" parameterType="adminquizVO">
+		INSERT INTO QUIZ (QUIZ_NUM,
+			              QUIZ_CON,
+			              SUB_NUM )
+			   VALUES ( #{quiz_num},
+			            #{quiz_con},
+			            #{sub_num}
+			           )
+	</insert>
+	
+	<!-- 문제갯수를 세서 PK로 쓸것 -->
+	<select id="lastQuizNum" resultType="int">
+		SELECT COUNT(*) from QUIZ
+	</select>
+	
+	<!-- 문제리스트 -->
+	<select id="quizList" resultType="adminquizVO" parameterType="map">
+		SELECT * 
+		  FROM QUIZ
+		<if test="sub_num != '' and sub_num != null">
+       	  WHERE SUB_NUM = #{sub_num}
+    	</if>
+	</select>
+	
+	<!-- 문제 상세보기 -->
+	<select id="quizView" resultType="adminquizVO" parameterType="map">
+		SELECT * 
+		  FROM QUIZ
+		 WHERE QUIZ_NUM = #{quiz_num}
+	</select>
+	
+	<!-- 문제 삭제 -->
+	<delete id="quizDelete" parameterType="map">
+		DELETE FROM QUIZ
+		 WHERE QUIZ_NUM = #{quiz_num}
+	</delete>
+</mapper>

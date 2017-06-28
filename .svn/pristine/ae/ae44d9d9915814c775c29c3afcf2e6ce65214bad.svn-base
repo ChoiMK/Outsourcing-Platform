@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+<mapper namespace="reference">
+	  <sql id="selectAll">
+	  	SELECT *
+	  	  FROM REFERENCE
+	  	 WHERE RE_WHT = 'n'
+	  </sql>
+	  
+	  <resultMap type="referenceVO" id="referenceMap">
+	  	<result property="re_tit" column="re_tit"/>
+	  	<result property="re_con" column="re_con"/>
+	  	<result property="re_luc" column="re_luc"/>
+	  	<result property="re_inst_date" column="re_inst_date"/>
+	  	<result property="mem_id" column="mem_id"/>
+	  	<result property="re_good" column="re_good"/>
+	  </resultMap>
+
+      <!-- 자료실 등록 -->
+      <insert id="insertReference" parameterType="referenceVO">
+      	INSERT INTO REFERENCE (
+      					  RE_NUM,
+      					  RE_TIT,
+      					  RE_CON,
+      					  RE_INST_DATE,
+      					  MEM_ID
+      					)
+      	VALUES (
+      			 'B'||LPAD(SEQ_REFERENCE.NEXTVAL,5,0),
+      			 #{re_tit},
+      			 #{re_con},
+      			 SYSDATE,
+      			 #{mem_id}
+      	       )
+      </insert>
+      
+      <!-- 자료실 수정 -->
+      <update id="updateReference" parameterType="referenceVO">
+      	UPDATE REFERENCE
+      	   SET RE_TIT = #{re_tit},
+      	       RE_CON = #{re_con},
+      	       RE_INST_DATE = SYSDATE
+      	 WHERE RE_NUM = #{re_num}
+      </update>
+      
+      <!-- 자료실 삭제 -->
+      <update id="deleteReference" parameterType="map">
+      	UPDATE REFERENCE
+      	   SET RE_WHT = 'y'
+      	 WHERE RE_NUM = #{re_num}
+      </update>
+      
+      <!-- 자료실 조회수 증가 -->
+      <update id="hitReference" parameterType="map">
+      	UPDATE REFERENCE
+      	   SET RE_LUC = RE_LUC + 1
+      	 WHERE RE_NUM = #{re_num}
+      </update>
+      
+      <!-- 자료실 리스트 -->
+      <select id = "referenceList" resultType="referenceVO" parameterType="map">
+       	<include refid="selectAll" />
+       	ORDER BY RE_INST_DATE ASC
+      </select>
+      
+      <!-- 자료실 상세보기 -->
+      <select id="referenceInfo" resultMap="referenceMap" parameterType="Map">
+      	<include refid="selectAll" />
+      	 AND RE_NUM = #{re_num}
+      </select>
+      
+      <!-- 좋아요 1개 증가 -->
+      <update id="goodReference" parameterType="map">
+      	UPDATE REFERENCE
+      	   SET RE_GOOD = RE_GOOD + 1
+      	 WHERE RE_NUM = #{re_num}
+      </update>
+</mapper>

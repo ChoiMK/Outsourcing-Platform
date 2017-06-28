@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+<mapper namespace="document">
+       
+      <sql id="selectAll">
+      	SELECT * 
+      	  FROM DOC_MNG
+      	 WHERE DOC_WHT = 'n'
+      </sql> 
+      
+      <resultMap type="documentVO" id="documentMap">
+      	<result property="doc_form_cla" column="doc_form_cla"/>
+      	<result property="doc_tit" column="doc_tit"/>
+      	<result property="mem_id" column="mem_id"/>
+      	<collection property="attachFileItemList" column="doc_num" select="document.fileItemInfo" />
+      </resultMap>
+       
+      <!-- 문서 등록 -->
+      <insert id="insertDocument" parameterType="documentVO" >
+      	<selectKey keyProperty="doc_num" resultType="string" order="BEFORE">
+			SELECT 'D'||LPAD(SEQ_DOC_MNG.NEXTVAL,5,0) FROM DUAL
+		</selectKey>
+      	INSERT INTO DOC_MNG (
+      					  DOC_NUM,
+      					  DOC_FORM_CLA,
+      					  DOC_TIT,
+      					  MEM_ID
+      					)
+      	VALUES (
+      			 #{doc_num},
+      			 #{doc_form_cla},
+      			 #{doc_tit},
+      			 #{mem_id}
+      	       )
+      </insert>
+      
+      <!-- 문서 수정 -->
+      <update id="updateDocument" parameterType="documentVO">
+      	UPDATE DOC_MNG
+      	   SET doc_form_cla,
+      	       doc_tit
+      	 WHERE doc_num = #{doc_num}
+      </update>
+      
+      <!-- 문서 삭제 -->
+      <update id="deleteDocument" parameterType="documentVO">
+       UPDATE DOC_MNG
+          SET doc_wht = 'y'
+        WHERE doc_num = #{doc_num}
+      </update>
+      
+      <!-- 문서파일 등록 -->
+      <insert id="insertFileItem" parameterType="fileitemVO">
+      	INSERT INTO FILEITEM (
+      	                       FILE_NUM,
+      	                       FILE_SIZE,
+      	                       FILE_UPL_DATE,
+      	                       FILE_CON_TYPE,
+      	                       FILE_UPL_NM,
+      	                       FILE_SAVE_NM,
+      	                       FILE_BOD_NUM
+      	                     )
+      	             VALUES (
+      	             		   SEQ_FILEITEM.NEXTVAL,
+      	             		   #{file_size},
+      	             		   SYSDATE,
+      	             		   #{file_con_type},
+      	             		   #{file_upl_nm},
+      	             		   #{file_save_nm},
+      	             		   #{file_bod_num}
+      	                    )
+      </insert>
+      
+      <!-- 문서 리스트 -->
+      <select id="fileitemInfo" parameterType="map" resultType="documentfileVO">
+      	     SELECT *
+      	       FROM FILEITEM
+      	 INNER JOIN DOC_MNG 
+      	         ON FILEITEM.FILE_BOD_NUM = DOC_MNG.DOC_NUM
+      	      WHERE DOC_MNG.MEM_ID = #{mem_id}
+      </select>
+      
+      
+      <!-- 문서파일 삭제 -->
+      <select id="deleteDocFileInfo" statementType="CALLABLE" parameterType="map">
+      	{call delete_file_doc(#{file_bod_num})}
+      </select>
+      
+      <!-- 문서보기 -->
+      <select id="fileInfo" parameterType="map" resultType="fileitemVO">
+		SELECT *
+		  FROM FILEITEM
+		 WHERE FILE_NUM = #{file_num}
+		</select>
+      
+</mapper>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+<typeAliases>
+	  <typeAlias alias="alarmVO" type="kr.or.plzdvl.alarm.vo.AlarmVO"/>
+ <!-- <typeAlias alias="adminDvrTestOptVo" type="kr.or.plzdvl.admin.dvrTest.vo.AdminDvrTestOptVo"/> -->
+ <!-- <typeAlias alias="adminDvrTestQueVo" type="kr.or.plzdvl.admin.dvrTest.vo.AdminDvrTestQueVo"/> -->
+	  <typeAlias alias="memberVO" type="kr.or.plzdvl.member.vo.MemberVO"/>
+	  <typeAlias alias="memberfileVO" type="kr.or.plzdvl.member.vo.MemberFileVO"/>	  
+	  <typeAlias alias="projectVO" type="kr.or.plzdvl.project.vo.ProjectVO"/>
+	  <typeAlias alias="supportVO" type="kr.or.plzdvl.support.vo.SupportVO"/>
+	  <typeAlias alias="faqVO" type="kr.or.plzdvl.faq.vo.FaqVO"/>
+	  <typeAlias alias="noticeVO" type="kr.or.plzdvl.notice.vo.NoticeVO"/>
+	  <typeAlias alias="tecinfoVO" type="kr.or.plzdvl.tecinfo.vo.TecinfoVO"/>
+	  <typeAlias alias="carinfoVO" type="kr.or.plzdvl.carinfo.vo.CarinfoVO"/>
+	  <typeAlias alias="documentVO" type="kr.or.plzdvl.document.vo.DocumentVO"/>
+	  <typeAlias alias="documentfileVO" type="kr.or.plzdvl.document.vo.DocumentFileVO"/>
+	  <typeAlias alias="referenceVO" type="kr.or.plzdvl.reference.vo.ReferenceVO"/>
+	  <typeAlias alias="portfolioVO" type="kr.or.plzdvl.portfolio.vo.PortfolioVO"/>
+	  <typeAlias alias="portfolioFileVO" type="kr.or.plzdvl.portfolio.vo.PortfolioFileVO"/>
+	  <typeAlias alias="commtVO" type="kr.or.plzdvl.comment.vo.CommtVO"/>
+	  <typeAlias alias="fileitemVO" type="kr.or.plzdvl.fileitem.vo.FileitemVO"/>
+	  <typeAlias alias="technologyVO" type="kr.or.plzdvl.tecinfo.vo.TechnologyVO"/>
+	  <typeAlias alias="subjectVO" type="kr.or.plzdvl.dvrTest.vo.SubjectVO"/>
+	  <typeAlias alias="quizVO" type="kr.or.plzdvl.dvrTest.vo.QuizVO"/>
+	  <typeAlias alias="quizOptVO" type="kr.or.plzdvl.dvrTest.vo.QuizOptVO"/>
+	  <typeAlias alias="solveVO" type="kr.or.plzdvl.dvrTest.vo.SolveVO"/>
+	  <typeAlias alias="meetVO" type="kr.or.plzdvl.meetingschedule.vo.MeetingVO"/>
+	  <typeAlias alias="adminquizVO" type="kr.or.plzdvl.admin.dvrTest.vo.QuizVO"/>
+	  <typeAlias alias="adminquiz_optVO" type="kr.or.plzdvl.admin.dvrTest.vo.Quiz_optVO"/>
+</typeAliases>
+    <mappers>
+        <mapper resource="kr/or/plzdvl/mybatis/mapper/alarm.xml" />
+        <mapper resource="kr/or/plzdvl/mybatis/mapper/member.xml" />
+        <mapper resource="kr/or/plzdvl/mybatis/mapper/project.xml" />
+        <mapper resource="kr/or/plzdvl/mybatis/mapper/support.xml" />
+        <mapper resource="kr/or/plzdvl/mybatis/mapper/faq.xml" />
+        <mapper resource="kr/or/plzdvl/mybatis/mapper/notice.xml" />
+        <mapper resource="kr/or/plzdvl/mybatis/mapper/tecinfo.xml" />
+        <mapper resource="kr/or/plzdvl/mybatis/mapper/carinfo.xml" />
+        <mapper resource="kr/or/plzdvl/mybatis/mapper/document.xml" />
+        <mapper resource="kr/or/plzdvl/mybatis/mapper/reference.xml" />
+        <mapper resource="kr/or/plzdvl/mybatis/mapper/portfolio.xml" />
+        <mapper resource="kr/or/plzdvl/mybatis/mapper/commt.xml" />
+        <mapper resource="kr/or/plzdvl/mybatis/mapper/technology.xml" />
+        <mapper resource="kr/or/plzdvl/mybatis/mapper/dvrTest.xml" />
+        <mapper resource="kr/or/plzdvl/mybatis/mapper/adminDvrTest.xml" />
+        <mapper resource="kr/or/plzdvl/mybatis/mapper/count.xml" />
+        <mapper resource="kr/or/plzdvl/mybatis/mapper/metting.xml" />
+        <mapper resource="kr/or/plzdvl/mybatis/mapper/subject.xml" />
+        <mapper resource="kr/or/plzdvl/mybatis/mapper/quiz.xml" />
+        <mapper resource="kr/or/plzdvl/mybatis/mapper/quiz_opt.xml" />
+        <mapper resource="kr/or/plzdvl/mybatis/mapper/solve.xml" />
+    </mappers>
+</configuration>

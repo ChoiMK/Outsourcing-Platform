@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+<mapper namespace="quiz_opt">
+	<!-- 보기등록 -->
+	<insert id="insertQuizOpt" parameterType="adminquiz_optVO">
+		INSERT INTO QUIZ_OPT (OPT_NUM,
+			              OPT_CON,
+			              QUIZ_NUM,
+			              OPT_WHT )
+			   	   VALUES
+			             ( SEQ_QUIZ_OPT.NEXTVAL,
+			               #{opt_con},
+			               #{quiz_num},
+			               #{opt_wht} )
+	</insert>
+	
+	<!-- 보기리스트 -->
+	<select id="optList" resultType="adminquiz_optVO">
+		SELECT * FROM QUIZ_OPT
+	</select>
+	
+	<!-- 문제에 대한 보기 상세보기  -->
+	<select id="optInfo" parameterType="map" resultType="adminquiz_optVO">
+		SELECT * FROM QUIZ_OPT WHERE QUIZ_NUM = #{quiz_num}
+	</select>
+	
+	<!-- 보기삭제 -->
+	<delete id="optDelete" parameterType="map">
+		DELETE FROM WHERE QUIZ_NUM = #{quiz_num}
+	</delete>
+</mapper>
